@@ -7,7 +7,7 @@ import { ClipLoader } from "react-spinners";
 
 function Login() {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext); 
+  const { user, setUser } = useContext(UserContext);
   //input form data
   const [inputData, setinputData] = useState({
     email: "",
@@ -38,23 +38,24 @@ function Login() {
     }
 
     try {
-      const response = await axiosInstance.post("/user/login", inputData);
+      const {data}= await axiosInstance.post("/user/login", inputData);
       // console.log(response.data.msg);
-      setSuccessMessage(response.data.msg);
-//put the value of the token to local storage
-      localStorage.setItem("token", response.data.token);
-      setUser({ token: response?.data?.token }); // Update the UserContext
-      console.log("Saved token:", response.data.token);
+      setSuccessMessage(data.msg);
+      //put the value of the token to local storage
+      localStorage.setItem("token",data.token);
+      setUser({ token: data?.token,user:data?.user.username}); // Update the UserContext
+      console.log(data);
 
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error("Login error:", error);
       setError(
-        error.response?.data?.msg || "Something went wrong! Please try again."
+        error.data?.msg || "Something went wrong! Please try again."
       );
     }
     setLoading(false);
   };
+  console.log(user);
 
   return (
     <section className={styles.loginContainer}>
@@ -89,7 +90,9 @@ function Login() {
               <div className={styles.success}>{successMessage}</div>
             )}
 
-            
+            <h3 className={styles.forgot__password}>
+              <Link to="/forget-password">Forgot your password?</Link>
+            </h3>
 
             <button
               type="submit"
@@ -119,7 +122,6 @@ function Login() {
           </h3>
         </div>
       </div>
-
       <div className={styles.rightWrapperLogin}>
         <div className={styles.overridephoto}>
           <svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
