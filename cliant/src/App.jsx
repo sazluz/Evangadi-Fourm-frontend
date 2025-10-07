@@ -12,6 +12,7 @@ import ProtectedRoute from "./context/ProtectedRoute"
 import LandingPage from "./pages/LandingPage/LandingPage"
 import Footer from "./components/Footer/Footer"
 import HowItWorks from "./pages/HowItWorks/HowItWorks"
+import ContactUs from "./pages/ContactUs/ContactUs"
 
 function App() {
   const { user, setUser } = useContext(UserContext);
@@ -70,7 +71,8 @@ function App() {
         <Route path="/" element={<LandingPage/>}/>
          <Route path="/home" element={
           <ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="how-it-works" element={<HowItWorks/>}/>
+          <Route path="/how-it-works" element={<HowItWorks/>}/>
+          <Route path="/contact" element={<ContactUs/>}/>
         <Route path="/login" element={ <Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
