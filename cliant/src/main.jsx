@@ -4,15 +4,15 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./context/UserProvide.jsx";
-import {QuestionProvider} from "./context/QuestionProvide.jsx"
+import { QuestionProvider } from "./context/QuestionProvide.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UserProvider>
       <QuestionProvider>
         <BrowserRouter>
-        <App />
-      </BrowserRouter>
-        </QuestionProvider>
+          <App />
+        </BrowserRouter>
+      </QuestionProvider>
     </UserProvider>
   </StrictMode>
 );

@@ -1,8 +1,8 @@
-
 import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowDropright } from "react-icons/io";
+import DOMPurify from "dompurify";
 import axiosInstance from "../../Axios/axiosConfig";
 import { QuestionContext } from "../../context/QuestionProvide";
 import { UserContext } from "../../context/UserProvide";
@@ -12,16 +12,21 @@ import { ClipLoader } from "react-spinners";
 const Home = () => {
   const token = localStorage.getItem("token");
   const { questions, setQuestions } = useContext(QuestionContext);
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 7;
   const navigate = useNavigate();
-  const [showMessage, setShowMessage] = useState(false);
-  const [deleteQuestionId, setDeleteQuestionId] = useState(null);
 
+  useEffect(() => {
+    // console.log("Logged in user:", user);
+    // console.log("First question:", questions?.[0]);
+  }, [user, questions]);
+
+
+  // Fetch all questions with frontend-created createdAt fallback
   useEffect(() => {
     (async () => {
       try {
@@ -30,52 +35,47 @@ const Home = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setQuestions(response.data.questions);
+
+        const questionsWithCreatedAt = response.data.questions.map((q) => ({
+          ...q,
+          createdAt: q.createdAt || new Date().toISOString(), // fallback timestamp
+        }));
+
+        setQuestions(questionsWithCreatedAt);
         setLoading(false);
       } catch (err) {
         setError(
           err.response?.data?.message ||
             "No questions available now. Please try again."
         );
-      } finally {
         setLoading(false);
       }
     })();
   }, [token, setQuestions]);
-
+  //edit question
   const handleEdit = (questionid, e) => {
     e.stopPropagation();
-    navigate(`/questions/update/${questionid}`);
+    navigate(`/questions/question/${questionid}`);
   };
-
+  //delete question
   const handleDelete = async (questionid, e) => {
     e.stopPropagation();
     try {
-      const user_id = user?.user_id;
-
-      if (!user_id) {
-        // console.error("User not logged in.");
-        return;
-      }
+      const userid = user?.userid;
+      if (!userid) return;
 
       const confirmDelete = window.confirm(
         "Are you sure you want to delete this question?"
       );
-      // if (!confirmDelete) return;
-      if (!confirmDelete) {
-        return; // This stops further code execution
-      }
+      if (!confirmDelete) return;
 
-      const response = await axiosInstance.delete(
-        `/questions/delete/${questionid}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          data: { user_id, questionid },
-        }
-      );
+      await axiosInstance.delete(`/questions/question/${questionid}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { userid, questionid },
+      });
 
       setQuestions((prevQuestions) =>
-        prevQuestions.filter((question) => question.questionid !== questionid)
+        prevQuestions.filter((q) => q.questionid !== questionid)
       );
     } catch (err) {
       console.error("Error deleting question:", err);
@@ -83,9 +83,9 @@ const Home = () => {
   };
 
   const filteredQuestions = (questions || []).filter(
-    (question) =>
-      question.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      question.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    (q) =>
+      q.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      q.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const indexOfLastQuestion = currentPage * questionsPerPage;
@@ -94,7 +94,6 @@ const Home = () => {
     indexOfFirstQuestion,
     indexOfLastQuestion
   );
-// console.log(user);
 
   return (
     <div className={styles.homeContainer}>
@@ -106,13 +105,9 @@ const Home = () => {
           Ask a Question
         </button>
         <div className={styles.welcomeUser}>
-  <h1>
-    Welcome: {user ? user.user : "Loading..."}!
-  </h1>
-  <p>Learn, Share, and Inspire Others!</p>
-</div>
-
-        
+          <h1>Welcome: {user ? user.username : "Loading..."}!</h1>
+          <p>Learn, Share, and Inspire Others!</p>
+        </div>
       </header>
 
       <div className={styles.searchContainer}>
@@ -131,18 +126,19 @@ const Home = () => {
           <p className={styles.loadingMessage}>Loading questions...</p>
         </div>
       )}
+
       {error && <p className={styles.errorMessage}>{error}</p>}
+
       {!loading && !error && filteredQuestions.length === 0 && (
         <p className={styles.noQuestionsMessage}>No questions available.</p>
       )}
 
       {!loading && !error && filteredQuestions.length > 0 && (
         <div className={styles.questionsList}>
-          {currentQuestions.map((question) => (
+          {currentQuestions.map((question,i) => (
             <div
               key={question.questionid}
               className={styles.cardWrapper}
-              id={`question-summary-${question.questionid}`}
               onClick={() => navigate(`/questions/${question.questionid}`)}
             >
               <div className={styles.questionCard}>
@@ -158,30 +154,22 @@ const Home = () => {
                     >
                       {question.title}
                     </Link>
-                  </h3>
-                  <div>
-                    <div
-                      className={styles.descriptionDiv}
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(
-                          question?.question_description
-                        ),
-                      }}
-                    />
-                  </div>
 
+                  </h3>
                   <div
-                    className={styles.meta}
-                    // onClick={() =>
-                    //   navigate(`/questions/${question.questionid}`)
-                    // }
-                  >
+                    className={styles.descriptionDiv}
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(question?.description),
+                    }}
+                  />
+
+                  <div className={styles.meta}>
                     <div className={styles.metaTags}>
                       <ul className={styles.tagList}>
                         {question?.tags?.map((tag) => (
                           <li key={tag} className={styles.tagItem}>
                             <Link
-                              href={`/questions/tagged/${tag}`}
+                              to={`/questions/tagged/${tag}`}
                               className={styles.tag}
                             >
                               {tag}
@@ -193,13 +181,13 @@ const Home = () => {
                     <div className={styles.userCard} aria-live="polite">
                       <time className={styles.time}>
                         Asked at{" "}
-                        <span title={question.created_at}>
+                        <span title={question.createdAt}>
                           {new Date(question.createdAt).toLocaleString()}
                         </span>
                       </time>
                     </div>
                     <div className={styles.btnContainer}>
-                      {user?.user_id === question.user_id && (
+                      {user?.userid === question.userid && (
                         <div className={styles.actionButtons}>
                           <button
                             className={styles.editBtn}
@@ -210,7 +198,7 @@ const Home = () => {
                           <button
                             className={styles.deleteBtn}
                             onClick={(e) =>
-                              handleDelete(question?.questionid, e)
+                              handleDelete(question.questionid, e)
                             }
                           >
                             Delete
@@ -234,7 +222,6 @@ const Home = () => {
         </div>
       )}
 
-      {/* Pagination Controls */}
       <div className={styles.pagination}>
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

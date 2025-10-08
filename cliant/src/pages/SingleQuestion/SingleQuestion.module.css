@@ -1,0 +1,260 @@
+/* ==============================
+   Base Container
+============================== */
+.outerDiv {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Loader */
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+}
+
+/* ==============================
+   Question Card
+============================== */
+.questionCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+/* User Info */
+.questionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.userIcon {
+  font-size: 3rem;
+  color: #4caf50;
+  background-color: #e8f5e9;
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.username {
+  font-weight: 600;
+  color: #222;
+}
+
+.postedTime {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* Question title */
+.questionTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* Question description */
+.questionDescription {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #444;
+  background-color: #f9f9f9;
+  border-left: 4px solid #4caf50;
+  padding: 1rem;
+  border-radius: 10px;
+  word-break: break-word;
+}
+
+/* ==============================
+   Answers Section
+============================== */
+.answersCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  margin-bottom: 2rem;
+}
+
+.answersCard h3 {
+  font-size: 1.4rem;
+  color: #2e7d32;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Each answer */
+.answerCard {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.answerBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.answerBody .userIcon {
+  font-size: 2.5rem;
+  color: #388e3c;
+  background-color: #f1f8e9;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.answerBody strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.answerBody div {
+  flex: 1;
+  color: #444;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ==============================
+   Answer Form
+============================== */
+.answerFormCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+.answerFormCard textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.answerFormCard textarea:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 4px rgba(76, 175, 80, 0.4);
+}
+
+.answerFormCard button {
+  display: block;
+  margin-top: 1rem;
+  background-color: #4caf50;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.answerFormCard button:hover {
+  background-color: #43a047;
+}
+
+.answerFormCard button:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+/* ==============================
+   Responsive Design
+============================== */
+
+/* Tablets (≤768px) */
+@media (max-width: 768px) {
+  .outerDiv {
+    padding: 0.8rem;
+  }
+
+  .questionCard,
+  .answersCard,
+  .answerFormCard {
+    padding: 1rem;
+  }
+
+  .questionTitle {
+    font-size: 1.5rem;
+  }
+
+  .questionDescription {
+    font-size: 1rem;
+  }
+
+  .answerFormCard textarea {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile (≤480px) */
+@media (max-width: 480px) {
+  .questionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .userIcon {
+    font-size: 2.5rem;
+  }
+
+  .questionTitle {
+    font-size: 1.3rem;
+  }
+
+  .questionDescription {
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+
+  .answersCard h3 {
+    font-size: 1.2rem;
+  }
+
+  .answerBody {
+    flex-direction: column;
+  }
+
+  .answerBody .userIcon {
+    font-size: 2rem;
+  }
+
+  .answerFormCard button {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.6rem;
+  }
+}
+.successText{
+  color: #2e7d32;
+  font-size: 2rem;
+  align-items: center;
+  padding-left: 36%;
+}

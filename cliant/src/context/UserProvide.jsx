@@ -8,11 +8,13 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setUser({ token }); // Set the user token if available
+    localStorage.setItem("user", JSON.stringify(user));
+    // setUser(user);
+
+    if (token && user) {
+      setUser({ token, user }); // Set the user token if available
     }
   }, []);
-    
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

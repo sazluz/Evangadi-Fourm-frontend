@@ -25,6 +25,7 @@ function Login() {
     });
   };
 
+ // handle on submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -38,24 +39,67 @@ function Login() {
     }
 
     try {
-      const {data}= await axiosInstance.post("/user/login", inputData);
-      // console.log(response.data.msg);
+      const { data } = await axiosInstance.post("/user/login", inputData);
+
       setSuccessMessage(data.msg);
-      //put the value of the token to local storage
-      localStorage.setItem("token",data.token);
-      setUser({ token: data?.token,user:data?.user.username}); // Update the UserContext
-      console.log(data);
+
+      // ✅ Assume backend sends:
+      // data = { msg, token, user: { userid, username, email } }
+
+      const userData = {
+        userid: data.user.userid,
+        username: data.user.username,
+        token: data.token,
+      };
+
+      // ✅ Save to localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", data.token);
+
+      // ✅ Update context properly
+      setUser(userData);
 
       navigate("/home");
     } catch (error) {
       console.error("Login error:", error);
       setError(
-        error.data?.msg || "Something went wrong! Please try again."
+        error.response?.data?.msg || "Something went wrong! Please try again."
       );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
-  console.log(user);
+
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError("");
+  //   setSuccessMessage("");
+  //   setLoading(true);
+
+  //   if (!inputData.email || !inputData.password) {
+  //     setError("Both fields are required!");
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     const { data } = await axiosInstance.post("/user/login", inputData);
+  //     // console.log(response.data.msg);
+  //     setSuccessMessage(data.msg);
+  //     //put the value of the token to local storage
+  //     localStorage.setItem("token", data.token);
+  //     setUser({ token: data?.token, user: data?.user.username }); // Update the UserContext
+  //     // console.log(data);
+
+  //     navigate("/home");
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     setError(error.data?.msg || "Something went wrong! Please try again.");
+  //   }
+  //   setLoading(false);
+  // };
+  // console.log(user);
 
   return (
     <section className={styles.loginContainer}>
@@ -90,9 +134,9 @@ function Login() {
               <div className={styles.success}>{successMessage}</div>
             )}
 
-            <h3 className={styles.forgot__password}>
+            {/* <h3 className={styles.forgot__password}>
               <Link to="/forget-password">Forgot your password?</Link>
-            </h3>
+            </h3> */}
 
             <button
               type="submit"

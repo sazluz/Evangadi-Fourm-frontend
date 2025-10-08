@@ -72,8 +72,8 @@ function Header() {
                 </button>
               </li>
             ) : (
-              location.pathname !== "/user/login" &&
-              location.pathname !== "/user/register" && (
+              location.pathname !== "/login" &&
+              location.pathname !== "/register" && (
                 <li>
                   <Link
                     to="/login"

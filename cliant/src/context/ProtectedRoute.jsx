@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "./UserProvide";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const isTokenExpired = (token) => {
   try {
@@ -14,14 +14,14 @@ const isTokenExpired = (token) => {
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
-  const {user, setUser} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!user || !token || isTokenExpired(token)) {
       localStorage.removeItem("token"); // Remove expired token
       setUser(null); // Clear user context
-      navigate("/users/login"); // Redirect to login
+      navigate("/login"); // Redirect to login
     }
   }, [user, token, navigate, setUser]);
 

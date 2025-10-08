@@ -3,7 +3,6 @@ import styles from "./Contact.module.css";
 import { FaEnvelope, FaPhone, FaGlobe } from "react-icons/fa";
 import emailjs from "emailjs-com";
 
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -24,9 +23,9 @@ const Contact = () => {
     setStatus("Sending...");
 
     // Use your EmailJS IDs
-    const SERVICE_ID = "service_tubhbb6";
-const TEMPLATE_ID = "lIKT-LT3yXiWNWYs9";
-const USER_ID = "lIKT-LT3yXiWNWYs9";
+    const SERVICE_ID = Process.env.SERVICE_ID;
+    const TEMPLATE_ID = Process.env.TEMPLATE_ID; ;
+    const USER_ID = Process.env.USER_ID;
 
     emailjs
       .send(SERVICE_ID, TEMPLATE_ID, formData, USER_ID)

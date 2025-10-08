@@ -1,0 +1,183 @@
+import React, { useContext, useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import axiosInstance from "../../Axios/axiosConfig";
+import { UserContext } from "../../context/UserProvide";
+import DOMPurify from "dompurify";
+import { FaUserCircle } from "react-icons/fa";
+import { ClipLoader } from "react-spinners";
+import styles from "./SingleQuestion.module.css";
+import { IoIosArrowDropright } from "react-icons/io";
+
+const SingleQuestion = () => {
+  const { questionid } = useParams();
+  const { user } = useContext(UserContext);
+  const [question, setQuestion] = useState(null);
+  const [answers, setAnswers] = useState([]);
+  const [answerInput, setAnswerInput] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // -------------------******
+  // Fetch single question
+  // -------------------*****
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      try {
+        setLoading(true);
+        const token = user?.token || localStorage.getItem("token");
+        const res = await axiosInstance.get(
+          `/questions/question?questionid=${questionid}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setQuestion(res.data.questions[0] || null);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    };
+
+    fetchQuestion();
+  }, [questionid, user?.token]);
+
+  // -------------------***********
+  // Fetch answers
+  // -------------------***********
+  const fetchAnswers = async () => {
+    try {
+      setLoading(true);
+      const token = user?.token || localStorage.getItem("token");
+      const res = await axiosInstance.get(
+        `/answer/getanswer?questionid=${questionid}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setAnswers(res.data.answers || []);
+      setLoading(false);
+    } catch (err) {
+      console.error(
+        "Error fetching answers:",
+        err.response?.data || err.message
+      );
+      setAnswers([]);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchAnswers();
+  }, [questionid, user?.token]);
+
+  // -------------------**********
+  // Post new answer
+  // -------------------**********
+  const handlePostAnswer = async (e) => {
+    e.preventDefault();
+    if (!user?.userid) {
+      alert("You must be logged in to post an answer.");
+      return;
+    }
+    if (!answerInput.trim()) {
+      alert("Answer cannot be empty.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const sanitizedAnswer = DOMPurify.sanitize(answerInput);
+      const token = user?.token || localStorage.getItem("token");
+
+      await axiosInstance.post(
+        `/answer/${questionid}`,
+        {
+          answer: sanitizedAnswer,
+          userid: user.userid,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAnswerInput("");
+      await fetchAnswers();
+      setLoading(false);
+    } catch (err) {
+      console.error("Error posting answer:", err.response?.data || err.message);
+      setLoading(false);
+    }
+  };
+
+  // -------------------******
+  // Render
+  // -------------------****
+  return (
+    <div className={styles.outerDiv}>
+      {loading && (
+        <div className={styles.loaderContainer}>
+          <ClipLoader size={50} color="#36d7b7" />
+        </div>
+      )}
+
+      {question && (
+        <div className={styles.questionCard}>
+          <div className={styles.questionHeader}>
+            {/* Replace image with SVG icon */}
+            <FaUserCircle className={styles.userIcon} />
+
+            <div className={styles.userInfo}>
+              <strong className={styles.username}>{question.username}</strong>
+              {question.createdAt && (
+                <span className={styles.postedTime}>
+                  {new Date(question.createdAt).toLocaleString()}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <h2 className={styles.questionTitle}>{question.title}</h2>
+
+          <div
+            className={styles.questionDescription}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(question.description || ""),
+            }}
+          />
+        </div>
+      )}
+
+      <div className={styles.answersCard}>
+        <h3>Answers From The Community</h3>
+        {answers.length === 0 && <p>No answers yet. Be the first to answer!</p>}
+        {answers.map((ans) => (
+          <div key={ans.answerid} className={styles.answerCard}>
+            <div className={styles.answerBody}>
+              <FaUserCircle size={30} />
+              <strong>{ans.username}</strong>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(ans.answer),
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handlePostAnswer} className={styles.answerFormCard}>
+        <textarea
+          value={answerInput}
+          onChange={(e) => setAnswerInput(e.target.value)}
+          placeholder="Write your answer here..."
+          rows={6}
+          required
+        />
+        <button type="submit" disabled={loading}>
+          Post Your Answer
+        </button>
+      </form>
+      <Link to="/home">
+        <div className={styles.successMessage}>
+          <span className={styles.successText}>Click here to go home.</span>
+          <IoIosArrowDropright color="green" size={25} />
+        </div>
+      </Link>
+    </div>
+  );
+};
+
+export default SingleQuestion;
