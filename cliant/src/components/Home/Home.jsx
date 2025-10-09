@@ -17,6 +17,8 @@ const Home = () => {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOption, setSelectedOption] = useState("/ask");
+
   const questionsPerPage = 7;
   const navigate = useNavigate();
 
@@ -52,11 +54,13 @@ const Home = () => {
       }
     })();
   }, [token, setQuestions]);
+
   //edit question
   const handleEdit = (questionid, e) => {
     e.stopPropagation();
     navigate(`/questions/question/${questionid}`);
   };
+  
   //delete question
   const handleDelete = async (questionid, e) => {
     e.stopPropagation();
@@ -98,12 +102,27 @@ const Home = () => {
   return (
     <div className={styles.homeContainer}>
       <header className={styles.homeHeader}>
-        <button
-          className={styles.askQuestionBtn}
-          onClick={() => navigate("/ask")}
-        >
-          Ask a Question
-        </button>
+        <div className={styles.askQuestionBtnGroup}>
+          {/* Dropdown for selection */}
+          <select
+            className={styles.askQuestionBtn}
+            style={{ cursor: "pointer" }}
+            value={selectedOption}
+            onChange={(e) => setSelectedOption(e.target.value)}
+          >
+            <option value="/ask">Ask a Question</option>
+            <option value="/chatgpt">Ask AI</option>
+          </select>
+
+          {/* One single button */}
+          <button
+            className={styles.askQuestionBtn}
+            onClick={() => navigate(selectedOption)}
+          >
+            Go
+          </button>
+        </div>
+
         <div className={styles.welcomeUser}>
           <h1>Welcome: {user ? user.username : "Loading..."}!</h1>
           <p>Learn, Share, and Inspire Others!</p>
@@ -135,7 +154,7 @@ const Home = () => {
 
       {!loading && !error && filteredQuestions.length > 0 && (
         <div className={styles.questionsList}>
-          {currentQuestions.map((question,i) => (
+          {currentQuestions.map((question, i) => (
             <div
               key={question.questionid}
               className={styles.cardWrapper}
@@ -154,7 +173,6 @@ const Home = () => {
                     >
                       {question.title}
                     </Link>
-
                   </h3>
                   <div
                     className={styles.descriptionDiv}

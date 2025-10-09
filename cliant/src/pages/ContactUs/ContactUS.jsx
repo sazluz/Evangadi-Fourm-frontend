@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Contact.module.css";
 import { FaEnvelope, FaPhone, FaGlobe } from "react-icons/fa";
 import emailjs from "emailjs-com";
-
+// Use your EmailJS IDs
+const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.VITE_TEMPLATE_ID;
+const USER_ID = import.meta.env.VITE_USER_ID;
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -22,9 +25,6 @@ const Contact = () => {
 
     setLoading(true);
     setStatus("Sending...");
-
-    // Use your EmailJS IDs
-   
 
     emailjs
       .send(SERVICE_ID, TEMPLATE_ID, formData, USER_ID)

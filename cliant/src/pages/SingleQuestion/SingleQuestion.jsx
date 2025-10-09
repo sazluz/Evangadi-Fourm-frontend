@@ -7,6 +7,8 @@ import { FaUserCircle } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import styles from "./SingleQuestion.module.css";
 import { IoIosArrowDropright } from "react-icons/io";
+import { FaHeart } from "react-icons/fa";
+
 
 const SingleQuestion = () => {
   const { questionid } = useParams();
@@ -15,6 +17,7 @@ const SingleQuestion = () => {
   const [answers, setAnswers] = useState([]);
   const [answerInput, setAnswerInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [likes, setLikes] = useState({});
 
   // -------------------******
   // Fetch single question
@@ -64,6 +67,26 @@ const SingleQuestion = () => {
   useEffect(() => {
     fetchAnswers();
   }, [questionid, user?.token]);
+
+  //static like handler with localStorage
+ const handleLike = (answerid) => {
+   setLikes((prev) => {
+     const alreadyLiked = prev[answerid] === 1; // check if already liked
+     const updatedLikes = {
+       ...prev,
+       [answerid]: alreadyLiked ? 0 : 1, // toggle like
+     };
+     localStorage.setItem("likes", JSON.stringify(updatedLikes));
+     return updatedLikes;
+   });
+ };
+
+ // Load likes on component mount
+ useEffect(() => {
+   const savedLikes = JSON.parse(localStorage.getItem("likes")) || {};
+   setLikes(savedLikes);
+ }, []);
+
 
   // -------------------**********
   // Post new answer
@@ -145,14 +168,34 @@ const SingleQuestion = () => {
         {answers.length === 0 && <p>No answers yet. Be the first to answer!</p>}
         {answers.map((ans) => (
           <div key={ans.answerid} className={styles.answerCard}>
-            <div className={styles.answerBody}>
-              <FaUserCircle size={30} />
-              <strong>{ans.username}</strong>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(ans.answer),
-                }}
-              />
+            <div className={styles.answerContent}>
+              <div className={styles.answerText}>
+                <FaUserCircle size={30} className={styles.userIcon} />
+                <div>
+                  <strong>{ans.username}</strong>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(ans.answer),
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/*  Heart at the end */}
+              <div className={styles.answerLike}>
+                <span
+                  id={`heart-${ans.answerid}`}
+                  className={`${styles.tiktokHeart} ${
+                    likes[ans.answerid] ? styles.liked : ""
+                  }`}
+                  onClick={() => handleLike(ans.answerid)}
+                >
+                  <FaHeart />
+                </span>
+                <span className={styles.tiktokLikeCount}>
+                  {likes[ans.answerid] || 0}
+                </span>
+              </div>
             </div>
           </div>
         ))}

@@ -9,7 +9,6 @@ import { UserContext } from "../../context/UserProvide";
 import axiosInstance from "../../Axios/axiosConfig";
 
 function AskQuestion() {
-    
   const { user } = useContext(UserContext);
   const token = localStorage.getItem("token");
 
@@ -73,6 +72,9 @@ function AskQuestion() {
     "Review your question and post it to the site.",
   ];
 
+  //-----------*****
+  // ASK AI
+
   return (
     <div className={styles.container}>
       <div className={styles.steps}>
@@ -135,11 +137,11 @@ function AskQuestion() {
           </button>
         </form>
         <Link to="/home">
-                <div className={styles.successMessage}>
-                  <span className={styles.successText}>Click here to go home.</span>
-                  <IoIosArrowDropright color="green" size={25} />
-                </div>
-              </Link>
+          <div className={styles.successMessage}>
+            <span className={styles.successText}>Click here to go home.</span>
+            <IoIosArrowDropright color="green" size={25} />
+          </div>
+        </Link>
       </div>
     </div>
   );

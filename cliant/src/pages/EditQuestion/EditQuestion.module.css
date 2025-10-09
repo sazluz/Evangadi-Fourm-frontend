@@ -1,80 +1,170 @@
+/* Container styling */
+.container {
+  max-width: 720px;
+  margin: 60px auto;
+  padding: 40px;
+  background: linear-gradient(145deg, #ffffff, #f6f8ff);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(99, 99, 255, 0.08);
+  backdrop-filter: blur(8px);
+  transition: all 0.4s ease;
+}
+
+.container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(99, 99, 255, 0.15);
+}
+
+/* Heading */
+h2 {
+  text-align: center;
+  font-size: 1.9rem;
+  color: #2a2a4d;
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+  position: relative;
+  font-weight: 600;
+}
+
+h2::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #6b5bff, #a66bff);
+  transform: translateX(-50%);
+  border-radius: 3px;
+}
+
+/* Form groups */
+.formGroup {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  color: #3b3b5c;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+/* Inputs & Textarea */
+input[type="text"],
+textarea {
+  padding: 12px 15px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: 1.5px solid #d1d5db;
+  background: #f9f9ff;
+  color: #222244;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #7b6cff;
+  box-shadow: 0 0 0 4px rgba(123, 108, 255, 0.15);
+  background: #fff;
+}
+
+textarea {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Error message */
+.error {
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+/* Button Group */
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+/* Buttons */
+.submitButton,
+.discardButton {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Save Changes Button */
+.submitButton {
+  background: linear-gradient(135deg, #6b5bff, #8267ff);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(107, 91, 255, 0.25);
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #5a4be1, #735bff);
+  box-shadow: 0 8px 18px rgba(107, 91, 255, 0.3);
+}
+
+/* Discard Button */
+.discardButton {
+  background: #f4f4f7;
+  color: #444;
+  border: 1px solid #e1e1e9;
+}
+
+.discardButton:hover {
+  background: #ebebf2;
+  transform: translateY(-2px);
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .container {
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
+  animation: fadeIn 0.7s ease;
+}
+
+/* Mobile Responsive */
+@media (max-width: 650px) {
+  .container {
+    padding: 28px 20px;
+    margin: 40px 16px;
   }
-  
+
   h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #8d8f8d;
+    font-size: 1.6rem;
   }
-  
-  .formGroup {
-    margin-bottom: 15px;
+
+  .buttonGroup {
+    flex-direction: column;
   }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  input,
-  textarea {
+
+  .submitButton,
+  .discardButton {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    font-size: 14px;
   }
-  
-  textarea {
-    height: 150px;
-  }
-  
-  .quill-editor {
-    min-height: 150px;
-    height: auto;
-  }
-  
-  button {
-    background-color: #5b8c5d;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  .errorMessage {
-    color: red;
-    text-align: center;
-  }
-
-  .buttonGroup{
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  .submitButton, .discardButton {
-    width: 25%;
-  }
-
-  @media (max-width: 768px) {
-    .buttonGroup {
-      flex-direction: column;
-      align-items: center;
-    }
-   .submitButton, .discardButton {
-    width: 30%;
-  }
-  }
-
-  @media (max-width: 480px) {
-   .submitButton, .discardButton {
-    width: 50%;
-  }
-  }
+}
