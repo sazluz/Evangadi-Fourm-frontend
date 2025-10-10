@@ -12,7 +12,7 @@ const Contact = () => {
     name: "",
     email: "",
     message: "",
-  });
+  }); //stores input values
   const [status, setStatus] = useState(""); // Feedback message
   const [loading, setLoading] = useState(false); // For loader
 
