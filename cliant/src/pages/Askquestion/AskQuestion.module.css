@@ -58,7 +58,7 @@
 .successText {
   margin-right: 0.5rem;
   color: #2f8f4f;
-  font-weight: 500;
+  font-weight: 40;
 }
 
 .form {
@@ -142,7 +142,7 @@ label {
 }
 .successText{
   color: #2e7d32;
-  font-size: 2rem;
+  font-size: 1.1rem;
   align-items: center;
   padding-left: 36%;
   

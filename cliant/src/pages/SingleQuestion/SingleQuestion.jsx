@@ -7,6 +7,8 @@ import { FaUserCircle } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import styles from "./SingleQuestion.module.css";
 import { IoIosArrowDropright } from "react-icons/io";
+import { FaHeart } from "react-icons/fa";
+import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 
 const SingleQuestion = () => {
   const { questionid } = useParams();
@@ -15,6 +17,8 @@ const SingleQuestion = () => {
   const [answers, setAnswers] = useState([]);
   const [answerInput, setAnswerInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [likes, setLikes] = useState({});
+  const [isListening, setIsListening] = useState(false);
 
   // -------------------******
   // Fetch single question
@@ -65,6 +69,25 @@ const SingleQuestion = () => {
     fetchAnswers();
   }, [questionid, user?.token]);
 
+  //static like handler with localStorage
+  const handleLike = (answerid) => {
+    setLikes((prev) => {
+      const alreadyLiked = prev[answerid] === 1; // check if already liked
+      const updatedLikes = {
+        ...prev,
+        [answerid]: alreadyLiked ? 0 : 1, // toggle like
+      };
+      localStorage.setItem("likes", JSON.stringify(updatedLikes));
+      return updatedLikes;
+    });
+  };
+
+  // Load likes on component mount
+  useEffect(() => {
+    const savedLikes = JSON.parse(localStorage.getItem("likes")) || {};
+    setLikes(savedLikes);
+  }, []);
+
   // -------------------**********
   // Post new answer
   // -------------------**********
@@ -100,6 +123,33 @@ const SingleQuestion = () => {
       console.error("Error posting answer:", err.response?.data || err.message);
       setLoading(false);
     }
+  };
+
+  // *******speech*********/
+  const startListening = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Speech recognition not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const spokenText = event.results[0][0].transcript;
+
+      // append spoken text to the textarea
+      setAnswerInput((prev) => (prev ? `${prev} ${spokenText}` : spokenText));
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+    setIsListening(true);
   };
 
   // -------------------******
@@ -145,31 +195,71 @@ const SingleQuestion = () => {
         {answers.length === 0 && <p>No answers yet. Be the first to answer!</p>}
         {answers.map((ans) => (
           <div key={ans.answerid} className={styles.answerCard}>
-            <div className={styles.answerBody}>
-              <FaUserCircle size={30} />
-              <strong>{ans.username}</strong>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(ans.answer),
-                }}
-              />
+            <div className={styles.answerContent}>
+              <div className={styles.answerText}>
+                <FaUserCircle size={30} className={styles.userIcon} />
+                <div>
+                  <strong>{ans.username}</strong>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(ans.answer),
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/*  Heart at the end */}
+              <div className={styles.answerLike}>
+                <span
+                  id={`heart-${ans.answerid}`}
+                  className={`${styles.tiktokHeart} ${
+                    likes[ans.answerid] ? styles.liked : ""
+                  }`}
+                  onClick={() => handleLike(ans.answerid)}
+                >
+                  <FaHeart />
+                </span>
+                <span className={styles.tiktokLikeCount}>
+                  {likes[ans.answerid] || 0}
+                </span>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
       <form onSubmit={handlePostAnswer} className={styles.answerFormCard}>
-        <textarea
-          value={answerInput}
-          onChange={(e) => setAnswerInput(e.target.value)}
-          placeholder="Write your answer here..."
-          rows={6}
-          required
-        />
-        <button type="submit" disabled={loading}>
-          Post Your Answer
+        <div style={{ position: "relative", width: "100%" }}>
+          <textarea
+            value={answerInput}
+            onChange={(e) => setAnswerInput(e.target.value)}
+            placeholder="Write or speak your answer here..."
+            rows={6}
+            required
+            style={{
+              width: "100%",
+              paddingRight: "50px", // space for the mic
+              resize: "vertical",
+            }}
+          />
+
+          {/* Mic inside the textarea box */}
+          <button
+            type="button"
+            onClick={startListening}
+            className={`${styles.micButton} ${
+              isListening ? styles.listening : ""
+            }`}
+          >
+            {isListening ? <FaMicrophoneSlash /> : <FaMicrophone size={20}/>}
+          </button>
+        </div>
+
+        <button type="submit" disabled={loading} style={{ marginTop: "10px" }}>
+          {loading ? "Posting..." : "Post Your Answer"}
         </button>
       </form>
+
       <Link to="/home">
         <div className={styles.successMessage}>
           <span className={styles.successText}>Click here to go home.</span>

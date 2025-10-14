@@ -39,7 +39,7 @@
 
 .userIcon {
   font-size: 3rem;
-  color: #4caf50;
+  color:#0064D6;
   background-color: #e8f5e9;
   border-radius: 50%;
   padding: 4px;
@@ -65,7 +65,7 @@
 .questionTitle {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #2e7d32;
+  color:black;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
   text-align: left;
@@ -97,7 +97,7 @@
 
 .answersCard h3 {
   font-size: 1.4rem;
-  color: #2e7d32;
+  color: black;
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -164,7 +164,7 @@
 .answerFormCard button {
   display: block;
   margin-top: 1rem;
-  background-color: #4caf50;
+  background-color:#0077FF;
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
@@ -258,3 +258,79 @@
   align-items: center;
   padding-left: 36%;
 }
+/* Entire answer card content: text + heart side by side */
+.answerContent {
+  display: flex;
+  justify-content: space-between; /* text left, heart right */
+  align-items: center; /* vertical align heart to middle of text */
+  gap: 12px;
+}
+
+/* Answer text on the left */
+.answerText {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1; /* take available space */
+}
+
+/* Heart section on the right */
+.answerLike {
+  display: flex;
+  flex-direction: column; /* vertical: heart above count */
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Heart icon */
+.tiktokHeart {
+  color: #888;
+  font-size: 20px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.tiktokHeart:hover {
+  color: #ff2b52;
+  transform: scale(1.2);
+}
+
+.liked {
+  color: #ff2b52;
+}
+
+/* Count below heart */
+.tiktokLikeCount {
+  font-size: 12px;
+  color: #555;
+  margin-top: 2px;
+  font-weight: 500;
+}
+/* listening */.micButton {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background-color: #0078ff;
+  border: none;
+  border-radius: 20px; /* Rounded corners for an oval */
+  width: 60px;  /* Wider than height to create oval */
+  height: 40px; /* Height smaller than width */
+  color: white;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+  padding: 0; /* Keep content centered */
+}
+
+.micButton:hover {
+  transform: scale(1.1);
+  background-color: #0066dd;
+}
+
+.listening {
+  background-color: #ff4d4d !important;
+}
+

@@ -1,128 +1,80 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../Axios/axiosConfig";
-import styles from "./EditQuestion.module.css";
 import { QuestionContext } from "../../Context/QuestionProvide";
 import { UserContext } from "../../Context/UserProvide";
-import DOMPurify from "dompurify";
-import "quill/dist/quill.snow.css";
-// import "react-quill/dist/quill.snow.css";
-
-import Quill from "quill";
+import styles from "./EditQuestion.module.css";
 
 const EditQuestion = () => {
-    const { question_id } = useParams();
-    const navigate = useNavigate();
-    const {user} = useContext(UserContext);
+  const { questionid } = useParams();
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const { questions, setQuestions } = useContext(QuestionContext);
   const token = localStorage.getItem("token");
+
   const [loading, setLoading] = useState(true);
-  const [editorContent, setEditorContent] = useState("");
-  const [originalContent, setOriginalContent] = useState("");
-  const quillRef = useRef(null);
-  const quillInstance = useRef(null);
+  const [description, setDescription] = useState("");
 
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
   } = useForm();
 
-  const question = questions.find((q) => q.question_id === question_id);
-
+  // Fetch question
   useEffect(() => {
-    if (!question) {
-      (async () => {
-        try {
+    const fetchQuestion = async () => {
+      try {
+        const question = questions.find((q) => q.questionid === questionid);
+        if (question) {
+          reset({ title: question.title, tag: question.tag?.join(",") || "" });
+          setDescription(question.description);
+        } else {
           const response = await axiosInstance.get(
-            `/questions/question/${question_id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            `/questions/question/${questionid}`,
+            { headers: { Authorization: `Bearer ${token}` } }
           );
-          const sanitizedContent = DOMPurify.sanitize(
-            response.data.question.question_description
-          );
-          setQuestions((prev) => [...prev, response.data.question]);
-          setEditorContent(sanitizedContent);
-          setOriginalContent(sanitizedContent);
-          reset({
-            title: response.data.question.title,
-            tag: response.data.question.tag || "",
-          });
-          setLoading(false);
-        } catch {
-          setLoading(false);
+          const q = response.data.question;
+          setQuestions((prev) => [...prev, q]);
+          reset({ title: q.title, tag: q.tag?.join(",") || "" });
+          setDescription(q.description);
         }
-      })();
-    } else {
-      setEditorContent(DOMPurify.sanitize(question.question_description));
-      setOriginalContent(question.question_description);
-      reset({
-        title: question.title,
-        tag: question.tag || "",
-      });
-      setLoading(false);
-    }
-  }, [question, reset]);
-
-  useEffect(() => {
-    if (quillRef.current && !quillInstance.current) {
-      quillInstance.current = new Quill(quillRef.current, {
-        theme: "snow",
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, 3, 4, 5, false] }],
-            [{ font: [] }],
-            [{ list: "ordered" }, { list: "bullet" }],
-            ["bold", "italic", "underline", "strike"],
-            [{ color: [] }, { background: [] }],
-            [{ align: [] }],
-            ["blockquote", "code-block"],
-            ["link", "image", "video"],
-            [{ script: "sub" }, { script: "super" }],
-            [{ indent: "-1" }, { indent: "+1" }],
-            [{ direction: "rtl" }],
-            ["clean"],
-          ],
-        },
-      });
-      quillInstance.current.root.innerHTML = editorContent;
-      quillInstance.current.on("text-change", () => {
-        setEditorContent(
-          DOMPurify.sanitize(quillInstance.current.root.innerHTML)
-        );
-      });
-    }
-  }, [editorContent]);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchQuestion();
+  }, [questionid, questions, reset, setQuestions, token]);
 
   const onSubmit = async (data) => {
     try {
       const updatedQuestion = {
         title: data.title,
-        question_description: editorContent,
-        user_id: user.user_id,
-        question_id,
+        description: description,
+        userid: user.userid,
+        questionid,
       };
-      if (data.tag.trim()) {
+      if (data.tag?.trim()) {
         updatedQuestion.tag = data.tag.split(",").map((tag) => tag.trim());
       }
+
       await axiosInstance.put(
-        `/questions/update/${question_id}`,
+        `/questions/question/${questionid}`,
         updatedQuestion,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+
       setQuestions((prev) =>
         prev.map((q) =>
-          q.question_id === question_id ? { ...q, ...updatedQuestion } : q
+          q.questionid === questionid ? { ...q, ...updatedQuestion } : q
         )
       );
-      navigate(`/questions/${question_id}`);
+
+      navigate(`/home`);
     } catch (err) {
       console.error(err.message);
     }
@@ -146,16 +98,12 @@ const EditQuestion = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Description (Preview)</label>
-          <div
-            className={styles.previewBox}
-            dangerouslySetInnerHTML={{ __html: editorContent }}
+          <label>Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={8}
           />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Edit Description</label>
-          <div ref={quillRef} className={styles["quill-editor"]}></div>
         </div>
 
         <div className={styles.formGroup}>
@@ -174,7 +122,7 @@ const EditQuestion = () => {
           <button
             type="button"
             className={styles.discardButton}
-            onClick={() => navigate("/home")}
+            onClick={() => navigate(-1)} // Go back
           >
             Discard Changes
           </button>

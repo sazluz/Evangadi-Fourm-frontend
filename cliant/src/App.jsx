@@ -15,6 +15,7 @@ import EditQuestion from "./pages/EditQuestion/EditQuestion";
 import AskQuestion from "./pages/Askquestion/AskQuestion";
 import SingleQuestion from "./pages/SingleQuestion/SingleQuestion";
 import SharedComponent from "./components/SharedComponent/SharedComponent";
+import AskAi from "./pages/AskGpt/AskAi";
 
 function App() {
   const { user, setUser } = useContext(UserContext);
@@ -68,9 +69,8 @@ function App() {
 
   return (
     <>
-      
       <Routes>
-        <Route path="/" element={<SharedComponent/>}>
+        <Route path="/" element={<SharedComponent />}>
           <Route
             path="/"
             element={token ? <Navigate to="/home" /> : <LandingPage />}
@@ -95,7 +95,7 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
 
           <Route
-            path="/questions/question/:question_id"
+            path="/questions/question/:questionid"
             element={
               <ProtectedRoute>
                 <EditQuestion />
@@ -119,9 +119,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/chatgpt"
+            element={
+              <ProtectedRoute>
+                <AskAi />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
-      
     </>
   );
 }
