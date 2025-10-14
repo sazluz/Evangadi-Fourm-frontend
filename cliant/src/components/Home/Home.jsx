@@ -38,7 +38,7 @@ const Home = () => {
 
         const questionsWithCreatedAt = response.data.questions.map((q) => ({
           ...q,
-          createdAt: q.createdAt || new Date().toISOString(), // fallback timestamp
+          createdAt: q.createdAt || new Date().toISOString(),  
         }));
 
         setQuestions(questionsWithCreatedAt);
@@ -52,6 +52,7 @@ const Home = () => {
       }
     })();
   }, [token, setQuestions]);
+  
   //edit question
   const handleEdit = (questionid, e) => {
     e.stopPropagation();
