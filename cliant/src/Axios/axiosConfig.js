@@ -1,5 +1,9 @@
-import axios from "axios"
+import axios from "axios";
 const axiosinstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  // for local host url
+  // baseURL: "http://localhost:5000/api",
+  //for yegara host
+  baseURL: "https://evangadifourmfe.desalegnmengistu.com/api",
 });
-export default axiosinstance
+export default axiosinstance;
+

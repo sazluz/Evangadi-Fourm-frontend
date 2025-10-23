@@ -31,6 +31,7 @@ const Register = () => {
     setLoading(true);
 
     // main validation
+    
     if (
       !inputData.username ||
       !inputData.firstname ||
@@ -89,6 +90,7 @@ const Register = () => {
                   placeholder="Username"
                   value={inputData.username}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -101,7 +103,9 @@ const Register = () => {
                     placeholder="First Name"
                     value={inputData.firstname}
                     onChange={handleChange}
+                    required
                   />
+                 
                 </div>
                 <div className={styles.inputGroup}>
                   <label>Last Name</label>
@@ -111,6 +115,7 @@ const Register = () => {
                     placeholder="Last Name"
                     value={inputData.lastname}
                     onChange={handleChange}
+                    required
                   />
                 </div>
               </div>
@@ -123,6 +128,7 @@ const Register = () => {
                   placeholder="Email"
                   value={inputData.email}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -134,6 +140,7 @@ const Register = () => {
                   placeholder="Password"
                   value={inputData.password}
                   onChange={handleChange}
+                  required
                 />
               </div>
 

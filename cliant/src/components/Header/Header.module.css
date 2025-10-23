@@ -82,7 +82,7 @@
 
 /* Logout Button */
 .logoutButton {
-  background: #d32f2f;
+  background:rgb(255, 130, 26);
   color: white;
   border: none;
   padding: 8px 5px;
@@ -92,9 +92,6 @@
   transition: background 0.3s ease-in-out;
 }
 
-.logoutButton:hover {
-  background: #b71c1c;
-}
 
 /* Mobile Menu Button */
 .menuButton {

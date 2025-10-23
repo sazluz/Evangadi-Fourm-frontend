@@ -176,7 +176,7 @@
 }
 
 .answerFormCard button:hover {
-  background-color: #43a047;
+  background-color:#0064D6;
 }
 
 .answerFormCard button:disabled {
@@ -253,9 +253,9 @@
   }
 }
 .successText{
-  color: #2e7d32;
-  font-size: 2rem;
-  align-items: center;
+  margin-right: 0.5rem;
+  color: #2f8f4f;
+  font-weight: 40;
   padding-left: 36%;
 }
 /* Entire answer card content: text + heart side by side */

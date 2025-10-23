@@ -20,9 +20,9 @@ const SingleQuestion = () => {
   const [likes, setLikes] = useState({});
   const [isListening, setIsListening] = useState(false);
 
-  // -------------------******
+  // -------------------********
   // Fetch single question
-  // -------------------*****
+  // -------------------********
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
@@ -198,7 +198,7 @@ const SingleQuestion = () => {
             <div className={styles.answerContent}>
               <div className={styles.answerText}>
                 <FaUserCircle size={30} className={styles.userIcon} />
-                <div>
+                <div>a
                   <strong>{ans.username}</strong>
                   <div
                     dangerouslySetInnerHTML={{
