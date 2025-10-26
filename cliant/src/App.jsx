@@ -10,7 +10,7 @@ import isTokenExpired from "./utils/tokenUtils";
 import ProtectedRoute from "./context/ProtectedRoute";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import HowItWorks from "./pages/HowitWorks/HowItWorks";
-import ContactUs from "./pages/ContactUs/ContactUs";
+import ContactUs from "./pages/ContactUs/ContactUS";
 import EditQuestion from "./pages/EditQuestion/EditQuestion";
 import AskQuestion from "./pages/Askquestion/AskQuestion";
 import SingleQuestion from "./pages/SingleQuestion/SingleQuestion";
