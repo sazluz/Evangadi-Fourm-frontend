@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../Axios/axiosConfig";
-import { QuestionContext } from "../../Context/QuestionProvide";
-import { UserContext } from "../../Context/UserProvide";
+import { QuestionContext } from "../../context/QuestionProvide";
+import { UserContext } from "../../context/UserProvide";
 import styles from "./EditQuestion.module.css";
 
 const EditQuestion = () => {
