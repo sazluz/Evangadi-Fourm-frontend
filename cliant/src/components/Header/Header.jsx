@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../../Context/UserProvide";
+import { UserContext } from "../../context/UserProvide";
 import styles from "./Header.module.css";
 import Logo from "../../assets/images/EvangadiLogo.png";
 // Menu icon
